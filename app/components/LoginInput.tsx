@@ -1,16 +1,17 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import { logIn } from "../api/Auth";
+import { useRouter } from "next/navigation";
 
 export const LoginInput = () => {
   const [id, setId] = useState("");
   const [pass, setPass] = useState("");
+  const router = useRouter();
   const clickLogin = async () => {
     try {
       await logIn(id, pass);
-      setId("");
-      setPass("");
+      router.push("/home");
     } catch (error: any) {
       if (error.message === "401") {
         alert("IDまたはパスワードが正しくありません。");
@@ -18,6 +19,8 @@ export const LoginInput = () => {
       if (error.message === "400") {
         alert("パスワードを入力してください。");
       }
+      setId("");
+      setPass("");
     }
   };
   return (
@@ -41,7 +44,7 @@ export const LoginInput = () => {
       </label>
       <button
         onClick={clickLogin}
-        className="bg-gray-800 text-gray-100 mt-10 border-gray-100 border-3 rounded-3xl p-1.5 px-5 hover:bg-gray-600"
+        className="bg-gray-800 text-gray-100 mt-8 border-gray-100 border-3 rounded-3xl p-1.5 px-5 hover:bg-gray-600"
       >
         ログイン
       </button>
