@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { logIn } from "../api/Auth";
 import { useRouter } from "next/navigation";
 
@@ -10,14 +10,17 @@ export const LoginInput = () => {
   const router = useRouter();
   const clickLogin = async () => {
     try {
-      await logIn(id, pass);
+      const res = await logIn(id, pass);
+      document.cookie = `token=${res.token}; path=/; max-age=${60 * 60}; SameSite=Lax`;
+      document.cookie = `user_id=${res.user_id}; path=/; max-age=${60 * 60}; SameSite=Lax`;
       router.push("/home");
     } catch (error: any) {
       if (error.message === "401") {
         alert("IDまたはパスワードが正しくありません。");
-      }
-      if (error.message === "400") {
+      } else if (error.message === "400") {
         alert("パスワードを入力してください。");
+      } else {
+        alert("エラーが発生しました。");
       }
       setId("");
       setPass("");
@@ -37,6 +40,7 @@ export const LoginInput = () => {
       <label className="text-gray-100">
         パスワード
         <input
+          type="password"
           value={pass}
           onChange={(evt) => setPass(evt.target.value)}
           className="px-3 ml-5 bg-gray-100 w-60 rounded-lg text-black"
@@ -48,6 +52,12 @@ export const LoginInput = () => {
       >
         ログイン
       </button>
+      <div
+        onClick={() => router.push("logIn/create")}
+        className="text-gray-100 text-xs mt-3 underline"
+      >
+        アカウント作成はこちらから
+      </div>
     </>
   );
 };

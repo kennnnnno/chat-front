@@ -1,3 +1,6 @@
+import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
+import { redirect } from "next/navigation";
+
 const API_BASE_URL =
   (process.env.REACT_APP_API_BASE_URL || "http://localhost:3000") + "/auth";
 
@@ -12,8 +15,21 @@ export const logIn = async (id: string, pass: string) => {
   });
 
   if (!res.ok) {
-    // catch ブロックに渡したい文字列（statusコードなど）を throw する
     throw new Error(String(res.status));
   }
-  return res;
+  return res.json();
+};
+
+export const verify = async (token: RequestCookie) => {
+  try {
+    const res = await fetch(API_BASE_URL, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+      cache: "no-store",
+    });
+    return res;
+  } catch (error) {
+    redirect("/logIn");
+  }
 };
