@@ -10,10 +10,7 @@ export const LogoutButton = () => {
     router.push("/logIn");
   };
   return (
-    <button
-      onClick={logOut}
-      className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-    >
+    <button onClick={logOut} className="mr-5 font-semibold text-sm underline">
       ログアウト
     </button>
   );
